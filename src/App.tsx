@@ -1,40 +1,24 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createBrowserRouter, RouterProvider, ScrollRestoration, Outlet } from 'react-router-dom'
-import { TooltipProvider } from '@/components/ui/tooltip'
-import { Toaster } from '@/components/ui/sonner'
-import Index from './pages/Index'
-import NotFound from './pages/NotFound'
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-function RootLayout() {
-  return (
-    <>
-      <ScrollRestoration />
-      <Outlet />
-    </>
-  )
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
-const router = createBrowserRouter([
-  {
-    element: <RootLayout />,
-    children: [
-      { path: '/', element: <Index /> },
-      { path: '*', element: <NotFound /> },
-    ],
-  },
-])
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <RouterProvider router={router} />
-      </TooltipProvider>
-    </QueryClientProvider>
-  )
-}
-
-export default App
+export default App;
