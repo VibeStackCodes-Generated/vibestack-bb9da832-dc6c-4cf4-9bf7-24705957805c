@@ -4,41 +4,41 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: 0 0% 98%;
-  --color-foreground: 220 20% 14%;
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 220 20% 14%;
-  --color-popover: 0 0% 100%;
-  --color-popover-foreground: 220 20% 14%;
-  --color-primary: 221 83% 53%;
+  --color-background: 222 22% 8%;
+  --color-foreground: 210 20% 88%;
+  --color-card: 222 20% 11%;
+  --color-card-foreground: 210 20% 88%;
+  --color-popover: 222 22% 10%;
+  --color-popover-foreground: 210 20% 88%;
+  --color-primary: 142 70% 45%;
   --color-primary-foreground: 0 0% 100%;
-  --color-secondary: 220 14% 96%;
-  --color-secondary-foreground: 220 20% 14%;
-  --color-muted: 220 14% 96%;
-  --color-muted-foreground: 220 10% 46%;
-  --color-accent: 220 14% 96%;
-  --color-accent-foreground: 220 20% 14%;
+  --color-secondary: 222 15% 16%;
+  --color-secondary-foreground: 210 20% 88%;
+  --color-muted: 222 15% 14%;
+  --color-muted-foreground: 215 15% 50%;
+  --color-accent: 222 15% 16%;
+  --color-accent-foreground: 210 20% 88%;
   --color-destructive: 0 84% 60%;
   --color-destructive-foreground: 0 0% 100%;
-  --color-border: 220 13% 91%;
-  --color-input: 220 13% 91%;
-  --color-ring: 221 83% 53%;
-  --color-chart-1: 221 83% 53%;
-  --color-chart-2: 142 71% 45%;
-  --color-chart-3: 38 92% 50%;
-  --color-chart-4: 0 84% 60%;
-  --color-chart-5: 262 83% 58%;
+  --color-border: 222 15% 18%;
+  --color-input: 222 15% 18%;
+  --color-ring: 142 70% 45%;
+  --color-chart-1: 142 70% 45%;
+  --color-chart-2: 38 92% 50%;
+  --color-chart-3: 0 84% 60%;
+  --color-chart-4: 262 83% 58%;
+  --color-chart-5: 199 89% 48%;
   --radius: 0.5rem;
-  --color-sidebar-background: 0 0% 100%;
-  --color-sidebar-foreground: 220 20% 14%;
-  --color-sidebar-primary: 221 83% 53%;
+  --color-sidebar-background: 222 20% 11%;
+  --color-sidebar-foreground: 210 20% 88%;
+  --color-sidebar-primary: 142 70% 45%;
   --color-sidebar-primary-foreground: 0 0% 100%;
-  --color-sidebar-accent: 220 14% 96%;
-  --color-sidebar-accent-foreground: 220 20% 14%;
-  --color-sidebar-border: 220 13% 91%;
-  --color-sidebar-ring: 221 83% 53%;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-sidebar-accent: 222 15% 16%;
+  --color-sidebar-accent-foreground: 210 20% 88%;
+  --color-sidebar-border: 222 15% 18%;
+  --color-sidebar-ring: 142 70% 45%;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
 }
 
 @layer base {
@@ -46,30 +46,85 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
+    font-size: 13px;
   }
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(220 13% 82%); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: hsl(220 13% 70%); }
+::-webkit-scrollbar-track { background: hsl(222 22% 8%); }
+::-webkit-scrollbar-thumb { background: hsl(222 15% 22%); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(222 15% 30%); }
 
 @keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.animate-ticker { animation: ticker 45s linear infinite; }
+.animate-ticker { animation: ticker 50s linear infinite; }
 .ticker-mask {
-  mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
 }
 
 @keyframes pulse-slow {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.4; }
 }
 .animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }
 
-.leaflet-container { background: #f1f5f9 !important; }
-.leaflet-control-attribution { font-size: 9px !important; opacity: 0.6; }
-.leaflet-popup-content-wrapper { border-radius: 8px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important; }
+/* Leaflet dark theme overrides */
+.leaflet-container { background: hsl(222 22% 6%) !important; }
+.leaflet-control-attribution { font-size: 9px !important; opacity: 0.5; background: hsl(222 22% 10% / 0.8) !important; color: hsl(215 15% 50%) !important; }
+.leaflet-control-attribution a { color: hsl(142 70% 45%) !important; }
+.leaflet-control-zoom a { background: hsl(222 20% 14%) !important; color: hsl(210 20% 70%) !important; border-color: hsl(222 15% 20%) !important; }
+.leaflet-control-zoom a:hover { background: hsl(222 20% 18%) !important; }
+.leaflet-popup-content-wrapper { background: hsl(222 20% 12%) !important; color: hsl(210 20% 88%) !important; border-radius: 8px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important; border: 1px solid hsl(222 15% 20%) !important; }
+.leaflet-popup-tip { background: hsl(222 20% 12%) !important; }
 .leaflet-popup-content { margin: 10px 12px !important; }
+.leaflet-popup-close-button { color: hsl(215 15% 50%) !important; }
+
+/* Panel grid */
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 8px;
+}
+
+/* Panel card */
+.panel-card {
+  background: hsl(222 20% 11%);
+  border: 1px solid hsl(222 15% 16%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.panel-card:hover {
+  border-color: hsl(222 15% 22%);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid hsl(222 15% 16%);
+  background: hsl(222 20% 10%);
+  cursor: pointer;
+  user-select: none;
+}
+.panel-header:hover {
+  background: hsl(222 20% 12%);
+}
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(210 20% 75%);
+}
+.panel-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}

@@ -7,209 +7,118 @@ import { Loader2 } from 'lucide-react';
 function FitBounds() {
   const map = useMap();
   useEffect(() => {
-    map.setView([20, 20], 2);
+    map.setView([25, 20], 2);
     setTimeout(() => map.invalidateSize(), 300);
   }, [map]);
   return null;
 }
 
-function magToColor(mag: number) {
-  if (mag >= 6) return '#dc2626';
-  if (mag >= 5) return '#ea580c';
-  if (mag >= 4) return '#d97706';
-  if (mag >= 3) return '#ca8a04';
-  return '#0ea5e9';
+function magColor(m: number) {
+  if (m >= 7) return '#ef4444';
+  if (m >= 6) return '#f97316';
+  if (m >= 5) return '#eab308';
+  if (m >= 4) return '#a3e635';
+  return '#22d3ee';
 }
 
-function magToRadius(mag: number) {
-  if (mag >= 7) return 12;
-  if (mag >= 6) return 9;
-  if (mag >= 5) return 7;
-  if (mag >= 4) return 5;
-  return 4;
+function magRadius(m: number) {
+  if (m >= 7) return 14;
+  if (m >= 6) return 10;
+  if (m >= 5) return 7;
+  if (m >= 4) return 5;
+  return 3;
 }
 
 function eonetColor(cat: string) {
   if (cat.includes('Wildfire') || cat.includes('Fire')) return '#ef4444';
-  if (cat.includes('Volcano')) return '#dc2626';
-  if (cat.includes('Storm') || cat.includes('Cyclone')) return '#7c3aed';
-  if (cat.includes('Flood')) return '#2563eb';
+  if (cat.includes('Volcano')) return '#f97316';
+  if (cat.includes('Storm') || cat.includes('Cyclone')) return '#a855f7';
+  if (cat.includes('Flood')) return '#3b82f6';
   if (cat.includes('Ice')) return '#06b6d4';
-  return '#f59e0b';
-}
-
-function QuakeMarkers({ quakes }: { quakes: USGSFeature[] }) {
-  return (
-    <>
-      {quakes.map((eq) => {
-        const [lng, lat, depth] = eq.geometry.coordinates;
-        const mag = eq.properties.mag;
-        const color = magToColor(mag);
-        return (
-          <CircleMarker
-            key={eq.id}
-            center={[lat, lng]}
-            radius={magToRadius(mag)}
-            pathOptions={{
-              color,
-              fillColor: color,
-              fillOpacity: 0.4,
-              weight: 2,
-              opacity: 0.8,
-            }}
-          >
-            <Popup>
-              <div className="space-y-1 min-w-[200px]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="font-bold text-slate-900 text-xs">
-                    M{mag.toFixed(1)} Earthquake
-                  </span>
-                  {eq.properties.tsunami === 1 && (
-                    <span className="text-[9px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full border border-red-200">
-                      TSUNAMI
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs font-medium text-blue-700">{eq.properties.place}</div>
-                <div className="text-[11px] text-slate-500">Depth: {depth.toFixed(0)}km</div>
-                <div className="text-[10px] text-slate-400 font-mono">
-                  {formatTimeAgoLive(eq.properties.time)}
-                </div>
-                <a
-                  href={eq.properties.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-blue-600 hover:underline font-medium"
-                >
-                  View on USGS &rarr;
-                </a>
-              </div>
-            </Popup>
-          </CircleMarker>
-        );
-      })}
-    </>
-  );
-}
-
-function NASAMarkers({ events }: { events: EONETEvent[] }) {
-  return (
-    <>
-      {events.map((ev) => {
-        const geo = ev.geometry[ev.geometry.length - 1];
-        if (!geo || !geo.coordinates) return null;
-        const [lng, lat] = geo.coordinates;
-        const catTitle = ev.categories[0]?.title || 'Event';
-        const color = eonetColor(catTitle);
-        return (
-          <CircleMarker
-            key={ev.id}
-            center={[lat, lng]}
-            radius={7}
-            pathOptions={{
-              color,
-              fillColor: color,
-              fillOpacity: 0.35,
-              weight: 2,
-              opacity: 0.7,
-              dashArray: '4 3',
-            }}
-          >
-            <Popup>
-              <div className="space-y-1 min-w-[200px]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="text-[9px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">
-                    {catTitle.toUpperCase()}
-                  </span>
-                </div>
-                <div className="text-xs font-bold text-slate-900">{ev.title}</div>
-                <div className="text-[10px] text-slate-400 font-mono">
-                  {new Date(geo.date).toLocaleDateString()}
-                </div>
-                <a
-                  href={ev.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-blue-600 hover:underline font-medium"
-                >
-                  View on NASA EONET &rarr;
-                </a>
-              </div>
-            </Popup>
-          </CircleMarker>
-        );
-      })}
-    </>
-  );
+  return '#eab308';
 }
 
 export function WorldMap() {
-  const { data: quakes, isLoading: qLoading } = useEarthquakes();
-  const { data: nasaEvents, isLoading: nLoading } = useNASAEvents();
-
-  const totalEvents = (quakes?.length || 0) + (nasaEvents?.length || 0);
+  const { data: quakes, isLoading: qL } = useEarthquakes();
+  const { data: nasa, isLoading: nL } = useNASAEvents();
+  const total = (quakes?.length || 0) + (nasa?.length || 0);
 
   return (
     <div className="relative w-full h-full">
-      <MapContainer
-        center={[20, 20]}
-        zoom={2}
-        minZoom={2}
-        maxZoom={12}
-        scrollWheelZoom={true}
-        zoomControl={true}
-        className="w-full h-full z-0"
-      >
+      <MapContainer center={[25, 20]} zoom={2} minZoom={2} maxZoom={14} scrollWheelZoom zoomControl className="w-full h-full z-0">
         <FitBounds />
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           subdomains="abcd"
         />
-        {quakes && <QuakeMarkers quakes={quakes} />}
-        {nasaEvents && <NASAMarkers events={nasaEvents} />}
+        {quakes?.map(eq => {
+          const [lng, lat, depth] = eq.geometry.coordinates;
+          const c = magColor(eq.properties.mag);
+          return (
+            <CircleMarker key={eq.id} center={[lat, lng]} radius={magRadius(eq.properties.mag)}
+              pathOptions={{ color: c, fillColor: c, fillOpacity: 0.35, weight: 1.5, opacity: 0.7 }}>
+              <Popup>
+                <div className="space-y-1 min-w-[190px] text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ background: c }} />
+                    <span className="font-bold text-white">M{eq.properties.mag.toFixed(1)}</span>
+                    {eq.properties.tsunami === 1 && <span className="text-[9px] font-bold bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">TSUNAMI</span>}
+                  </div>
+                  <div className="text-emerald-400 font-medium">{eq.properties.place}</div>
+                  <div className="text-[hsl(215,15%,50%)]">Depth: {depth.toFixed(0)}km &middot; {formatTimeAgoLive(eq.properties.time)}</div>
+                  <a href={eq.properties.url} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline text-[10px]">USGS Details &rarr;</a>
+                </div>
+              </Popup>
+            </CircleMarker>
+          );
+        })}
+        {nasa?.map(ev => {
+          const geo = ev.geometry[ev.geometry.length - 1];
+          if (!geo?.coordinates) return null;
+          const [lng, lat] = geo.coordinates;
+          const cat = ev.categories[0]?.title || 'Event';
+          const c = eonetColor(cat);
+          return (
+            <CircleMarker key={ev.id} center={[lat, lng]} radius={8}
+              pathOptions={{ color: c, fillColor: c, fillOpacity: 0.25, weight: 2, opacity: 0.6, dashArray: '4 3' }}>
+              <Popup>
+                <div className="space-y-1 min-w-[190px] text-xs">
+                  <span className="text-[9px] font-bold bg-white/10 text-[hsl(210,20%,75%)] px-1.5 py-0.5 rounded">{cat.toUpperCase()}</span>
+                  <div className="font-bold text-white">{ev.title}</div>
+                  <div className="text-[hsl(215,15%,50%)]">{new Date(geo.date).toLocaleDateString()}</div>
+                  <a href={ev.link} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline text-[10px]">NASA EONET &rarr;</a>
+                </div>
+              </Popup>
+            </CircleMarker>
+          );
+        })}
       </MapContainer>
 
-      {/* Legend */}
-      <div className="absolute bottom-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2.5 shadow-md border border-slate-200">
-        <div className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Live Data</div>
-        <div className="flex flex-col gap-1 text-[10px] font-medium">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" /> M6+ Quake
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> M4-6 Quake
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> M2.5-4 Quake
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full border-2 border-dashed border-violet-500" /> NASA Event
-          </span>
-        </div>
+      {/* Top-left: source */}
+      <div className="absolute top-2 left-2 z-[1000] flex items-center gap-1.5 bg-[hsl(222,22%,8%)]/90 backdrop-blur rounded px-2 py-1 text-[9px] font-medium text-muted-foreground border border-border">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-slow" />
+        USGS &middot; NASA EONET &middot; Live
       </div>
 
-      {/* Counter */}
-      <div className="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-md border border-slate-200 text-[11px] font-semibold text-slate-700">
-        {(qLoading || nLoading) ? (
-          <span className="flex items-center gap-1.5 text-slate-400">
-            <Loader2 className="w-3 h-3 animate-spin" /> Loading...
-          </span>
+      {/* Top-right: count */}
+      <div className="absolute top-2 right-2 z-[1000] bg-[hsl(222,22%,8%)]/90 backdrop-blur rounded px-2 py-1 text-[10px] font-semibold border border-border">
+        {(qL || nL) ? (
+          <span className="flex items-center gap-1 text-muted-foreground"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
         ) : (
-          <>
-            <span className="text-blue-600">{totalEvents}</span> Live Events
-          </>
+          <><span className="text-emerald-500">{total}</span> <span className="text-muted-foreground">events</span></>
         )}
       </div>
 
-      {/* Source badge */}
-      <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-md border border-slate-200 text-[9px] font-semibold text-slate-500">
-        <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-slow" />
-          USGS + NASA EONET &middot; Live
-        </span>
+      {/* Bottom-left: legend */}
+      <div className="absolute bottom-2 left-2 z-[1000] bg-[hsl(222,22%,8%)]/90 backdrop-blur rounded px-2.5 py-1.5 border border-border">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-[9px] font-medium text-muted-foreground">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500" /> M6+</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> M5-6</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-lime-400" /> M4-5</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-400" /> M2.5-4</span>
+          <span className="flex items-center gap-1 col-span-2"><span className="w-2 h-2 rounded-full border border-dashed border-violet-400" /> NASA Event</span>
+        </div>
       </div>
     </div>
   );
