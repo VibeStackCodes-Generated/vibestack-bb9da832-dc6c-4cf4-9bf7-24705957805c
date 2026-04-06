@@ -24,10 +24,10 @@ export default function Index() {
       <div className="flex-1 overflow-hidden px-4 pb-4">
         {/* Desktop */}
         <div className="hidden lg:grid grid-cols-12 gap-3 h-full">
-          {/* Left - News */}
+          {/* Left - Live News */}
           <div className="col-span-3 flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <PanelHeader
-              title="Intelligence Feed"
+              title="Live News Feed"
               icon={<Newspaper className="w-4 h-4 text-emerald-600" />}
               badge="LIVE"
               badgeClass="bg-emerald-100 text-emerald-700"
@@ -41,9 +41,9 @@ export default function Index() {
           <div className="col-span-6 flex flex-col gap-3 overflow-hidden">
             <div className="h-[58%] bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col shrink-0">
               <PanelHeader
-                title="Global Threat Map"
+                title="Live Global Events"
                 icon={<Globe className="w-4 h-4 text-blue-600" />}
-                badge="10 EVENTS"
+                badge="USGS + NASA"
                 badgeClass="bg-blue-100 text-blue-700"
               />
               <div className="flex-1 overflow-hidden">
@@ -65,8 +65,11 @@ export default function Index() {
 
           {/* Right - Tabs */}
           <div className="col-span-3 flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <Tabs defaultValue="threats" className="flex flex-col h-full">
+            <Tabs defaultValue="seismic" className="flex flex-col h-full">
               <TabsList className="w-full rounded-none border-b border-slate-200 bg-white h-auto p-0 shrink-0">
+                <TabsTrigger value="seismic" className="flex-1 text-[10px] font-semibold rounded-none data-[state=active]:bg-slate-50 data-[state=active]:text-sky-700 data-[state=active]:shadow-[inset_0_-2px_0_0] data-[state=active]:shadow-sky-500 text-slate-400 py-2.5">
+                  <Activity className="w-3 h-3 mr-1" /> Seismic
+                </TabsTrigger>
                 <TabsTrigger value="threats" className="flex-1 text-[10px] font-semibold rounded-none data-[state=active]:bg-slate-50 data-[state=active]:text-amber-700 data-[state=active]:shadow-[inset_0_-2px_0_0] data-[state=active]:shadow-amber-500 text-slate-400 py-2.5">
                   <AlertTriangle className="w-3 h-3 mr-1" /> Threats
                 </TabsTrigger>
@@ -76,10 +79,10 @@ export default function Index() {
                 <TabsTrigger value="cyber" className="flex-1 text-[10px] font-semibold rounded-none data-[state=active]:bg-slate-50 data-[state=active]:text-violet-700 data-[state=active]:shadow-[inset_0_-2px_0_0] data-[state=active]:shadow-violet-500 text-slate-400 py-2.5">
                   <Shield className="w-3 h-3 mr-1" /> Cyber
                 </TabsTrigger>
-                <TabsTrigger value="seismic" className="flex-1 text-[10px] font-semibold rounded-none data-[state=active]:bg-slate-50 data-[state=active]:text-sky-700 data-[state=active]:shadow-[inset_0_-2px_0_0] data-[state=active]:shadow-sky-500 text-slate-400 py-2.5">
-                  <Activity className="w-3 h-3 mr-1" /> Seismic
-                </TabsTrigger>
               </TabsList>
+              <TabsContent value="seismic" className="flex-1 overflow-hidden m-0 bg-slate-50">
+                <SeismicMonitor />
+              </TabsContent>
               <TabsContent value="threats" className="flex-1 overflow-hidden m-0 bg-slate-50">
                 <ThreatMatrix />
               </TabsContent>
@@ -88,9 +91,6 @@ export default function Index() {
               </TabsContent>
               <TabsContent value="cyber" className="flex-1 overflow-hidden m-0 bg-slate-50">
                 <CyberPanel />
-              </TabsContent>
-              <TabsContent value="seismic" className="flex-1 overflow-hidden m-0 bg-slate-50">
-                <SeismicMonitor />
               </TabsContent>
             </Tabs>
           </div>
@@ -104,10 +104,10 @@ export default function Index() {
                 <Globe className="w-3 h-3 mr-1" /> Map
               </TabsTrigger>
               <TabsTrigger value="news" className="flex-1 text-[10px] font-semibold data-[state=active]:text-emerald-700">
-                <Newspaper className="w-3 h-3 mr-1" /> Feed
+                <Newspaper className="w-3 h-3 mr-1" /> News
               </TabsTrigger>
-              <TabsTrigger value="threats" className="flex-1 text-[10px] font-semibold data-[state=active]:text-amber-700">
-                <AlertTriangle className="w-3 h-3 mr-1" /> Threats
+              <TabsTrigger value="seismic" className="flex-1 text-[10px] font-semibold data-[state=active]:text-sky-700">
+                <Activity className="w-3 h-3 mr-1" /> Seismic
               </TabsTrigger>
               <TabsTrigger value="ai" className="flex-1 text-[10px] font-semibold data-[state=active]:text-violet-700">
                 <Sparkles className="w-3 h-3 mr-1" /> AI
@@ -119,19 +119,8 @@ export default function Index() {
             <TabsContent value="news" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200 shadow-sm">
               <NewsFeed />
             </TabsContent>
-            <TabsContent value="threats" className="flex-1 overflow-hidden m-0">
-              <Tabs defaultValue="risk" className="flex flex-col h-full">
-                <TabsList className="w-full rounded-xl mb-1 shrink-0 bg-white border border-slate-200">
-                  <TabsTrigger value="risk" className="flex-1 text-[9px]">Risk</TabsTrigger>
-                  <TabsTrigger value="military" className="flex-1 text-[9px]">Military</TabsTrigger>
-                  <TabsTrigger value="cyber" className="flex-1 text-[9px]">Cyber</TabsTrigger>
-                  <TabsTrigger value="seismic" className="flex-1 text-[9px]">Seismic</TabsTrigger>
-                </TabsList>
-                <TabsContent value="risk" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200"><ThreatMatrix /></TabsContent>
-                <TabsContent value="military" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200"><MilitaryTracker /></TabsContent>
-                <TabsContent value="cyber" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200"><CyberPanel /></TabsContent>
-                <TabsContent value="seismic" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200"><SeismicMonitor /></TabsContent>
-              </Tabs>
+            <TabsContent value="seismic" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200 shadow-sm">
+              <SeismicMonitor />
             </TabsContent>
             <TabsContent value="ai" className="flex-1 overflow-hidden m-0 bg-white rounded-xl border border-slate-200 shadow-sm">
               <AIBrief />
@@ -144,13 +133,12 @@ export default function Index() {
       <div className="h-8 bg-white border-t border-slate-200 flex items-center justify-between px-5 shrink-0">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow" /> System Operational
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow" /> Live Data Active
           </span>
-          <span className="text-[10px] text-slate-400">Uptime: 99.97%</span>
+          <span className="text-[10px] text-slate-400">USGS &middot; GDELT &middot; NASA EONET</span>
         </div>
         <div className="flex items-center gap-4 text-[10px] text-slate-400">
-          <span>Latency: <span className="font-semibold text-slate-600">12ms</span></span>
-          <span>Encryption: <span className="font-semibold text-slate-600">AES-256</span></span>
+          <span>Auto-refresh: <span className="font-semibold text-slate-600">60s</span></span>
           <span className="text-slate-300">v4.2.1</span>
         </div>
       </div>
